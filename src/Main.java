@@ -75,13 +75,15 @@ public class Main {
                 }
                 case 3 -> {
                     Scanner scaner3 = new Scanner(System.in);
+                    System.out.println("Podaj nazwe turnieju: ");
+                    String turniej = scaner3.nextLine();
                     System.out.println("Podaj ID meczu ktorego gry chcesz wyswietlic: ");
                     int mecz = scaner3.nextInt();
 
                     MysqlConnect mysqlConnect = new MysqlConnect();
                     try {
                         Statement stmt = mysqlConnect.connect().createStatement();
-                        ResultSet rs = stmt.executeQuery("select * from umdatabase.gra where mecz_id = '" + mecz + "'");
+                        ResultSet rs = stmt.executeQuery("select * from umdatabase.gra where mecz_id = (select mecz_id from umdatabase.mecz where turniej_id = (select turniej_id from umdatabase.turniej where nazwa_turnieju = '" + turniej + "') AND mecz_id = '" + mecz + "')");
                         if(!rs.next())
                         {
                             System.out.println("Mecz nie istnieje albo nie zawiera żadnych gier!");
@@ -126,8 +128,53 @@ public class Main {
                     }
                 }
                 case 5 -> {
+                    MysqlConnect mysqlConnect = new MysqlConnect();
+                    try {
+                        Statement stmt = mysqlConnect.connect().createStatement();
+                        ResultSet rs = stmt.executeQuery("select * from umdatabase.gracz");
+
+                        if(!rs.next())
+                        {
+                            System.out.println("W bazie mie ma żadnych graczy!");
+                            break;
+                        }
+
+                        System.out.println("ID | Imie | Data urodzenia | Typ uczestnika");
+                        while (rs.next()) {
+                            System.out.println(rs.getInt("ID") + ", "
+                                    + rs.getString("Imię") + ", "
+                                    + rs.getString("Data_urodzenia") + ", "
+                                    + rs.getString("Typ uczestnika"));
+                        }
+                    } catch (SQLException e){
+                        e.printStackTrace();
+                    }
                 }
                 case 6 -> {
+                    Scanner scaner6 = new Scanner(System.in);
+                    System.out.println("Podaj nazwe turnieju ktorego dostepnych bohaterow chcesz wysiwetlic: ");
+                    String turniej = scaner6.nextLine();
+
+                    MysqlConnect mysqlConnect = new MysqlConnect();
+                    try {
+                        Statement stmt = mysqlConnect.connect().createStatement();
+                        ResultSet rs = stmt.executeQuery("select * from umdatabase.bohaterowie where Nazwa_bohatera = (select Bohaterowie_Nazwa_bohatera from umdatabase.turniej_bohaterowie where Turniej_ID = (select turniej_id from umdatabase.turniej where nazwa_turnieju = '" + turniej + "'))");
+
+                        if(!rs.next())
+                        {
+                            System.out.println("Turniej nie istnieje albo nie ma przypisanych bohaterów!");
+                            break;
+                        }
+
+                        System.out.println("Nazwa bohatera | Startowe zdrowie");
+                        while (rs.next()) {
+                            System.out.println(rs.getString("Nazwa_bohatera") + ", "
+                                    + rs.getInt("Startowe_zdrowie"));
+                        }
+                    } catch (SQLException e){
+                        e.printStackTrace();
+                    }
+
                 }
                 case 7 -> {
                 }
