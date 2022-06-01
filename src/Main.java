@@ -16,7 +16,7 @@ public class Main {
             System.out.println("Wyswietl zawodnikow dla wybranego meczu - 4"); //kłopot
             System.out.println("Wyswietl graczy - 5");
             System.out.println("Wyswietl dostepnych bohaterow w wybranym turnieju - 6");
-            System.out.println("Wyswietl gry wybranego gracza - 7"); //kłopot
+            System.out.println("Wyswietl gry wybranego gracza - 7");
             System.out.println("Wyjscie do menu glownego - 0");
             System.out.println("Wybierz pozycje: ");
             int input = scaner.nextInt();
@@ -30,7 +30,7 @@ public class Main {
 
                         if(!rs.next())
                         {
-                            System.out.println("Nie ma żadnego zapisanego turnieju!");
+                            System.out.println("Nie ma żadnego zapisanego turnieju!\n");
                             break;
                         }
 
@@ -57,7 +57,7 @@ public class Main {
 
                        if(!rs.next())
                        {
-                          System.out.println("Turniej nie istnieje albo jest pusty!");
+                          System.out.println("Turniej nie istnieje albo jest pusty!\n");
                           break;
                        }
 
@@ -86,7 +86,7 @@ public class Main {
                         ResultSet rs = stmt.executeQuery("select * from umdatabase.gra where mecz_id = (select mecz_id from umdatabase.mecz where turniej_id = (select turniej_id from umdatabase.turniej where nazwa_turnieju = '" + turniej + "') AND mecz_id = '" + mecz + "')");
                         if(!rs.next())
                         {
-                            System.out.println("Mecz nie istnieje albo nie zawiera żadnych gier!");
+                            System.out.println("Mecz nie istnieje albo nie zawiera żadnych gier!\n");
                             break;
                         }
                         System.out.println("ID | Ilosc rozegranych tur | ID Mapy | ID Meczu");
@@ -135,7 +135,7 @@ public class Main {
 
                         if(!rs.next())
                         {
-                            System.out.println("W bazie mie ma żadnych graczy!");
+                            System.out.println("W bazie mie ma żadnych graczy!\n");
                             break;
                         }
 
@@ -162,7 +162,7 @@ public class Main {
 
                         if(!rs.next())
                         {
-                            System.out.println("Turniej nie istnieje albo nie ma przypisanych bohaterów!");
+                            System.out.println("Turniej nie istnieje albo nie ma przypisanych bohaterów!\n");
                             break;
                         }
 
@@ -177,6 +177,31 @@ public class Main {
 
                 }
                 case 7 -> {
+                    Scanner scaner4 = new Scanner(System.in);
+                    System.out.println("Podaj ID gracza którego mecze chcesz wyswietlic: ");
+                    int gracz = scaner4.nextInt();
+
+                    MysqlConnect mysqlConnect = new MysqlConnect();
+                    try {
+                        Statement stmt = mysqlConnect.connect().createStatement();
+                        ResultSet rs = stmt.executeQuery("select * from umdatabase.mecz where Zawodnicy_ID = (select ID from umdatabase.zawodnicy where Gracz_ID = '" + gracz + "')");
+
+                        if(!rs.next())
+                        {
+                            System.out.println("Gracz nie istnieje albo nie ma przypisanych żadnych meczy!\n");
+                            break;
+                        }
+
+                        System.out.println("ID | Data | Ilosc gier | ID Turnieju");
+                        while (rs.next()) {
+                            System.out.println(rs.getInt("ID") + ", "
+                                    + rs.getString("Data") + ", "
+                                    + rs.getInt("Ilość_gier") + ", "
+                                    + rs.getInt("Turniej_ID"));
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
                 case 0 -> {
                     disp = false;
