@@ -13,10 +13,10 @@ public class Main {
             System.out.println("Wyswietl turnieje - 1");
             System.out.println("Wyswietl mecze w wybranym turnieju - 2");
             System.out.println("Wyswietl gry w wybranym meczu - 3");
-            System.out.println("Wyswietl zawodnikow dla wybranego meczu - 4");
+            System.out.println("Wyswietl zawodnikow dla wybranego meczu - 4"); //kłopot
             System.out.println("Wyswietl graczy - 5");
             System.out.println("Wyswietl dostepnych bohaterow w wybranym turnieju - 6");
-            System.out.println("Wyswietl gry wybranego gracza - 7");
+            System.out.println("Wyswietl gry wybranego gracza - 7"); //kłopot
             System.out.println("Wyjscie do menu glownego - 0");
             System.out.println("Wybierz pozycje: ");
             int input = scaner.nextInt();
@@ -198,22 +198,8 @@ public class Main {
 
     }
 
-    public static void main(String[] args) {/*
-        MysqlConnect mysqlConnect = new MysqlConnect();
-        try {
-            Statement stmt = mysqlConnect.connect().createStatement();
-            ResultSet rs = stmt.executeQuery("select * from world.city where CountryCode = 'USA' ");
-            while (rs.next()) {
-                System.out.println(rs.getInt("ID") + ", "
-                        + rs.getString("Name") + ", "
-                        + rs.getString("CountryCode") + ", "
-                        + rs.getString("District") + ", "
-                        + rs.getInt("Population"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        */
+    public static void main(String[] args) {
+
         Scanner scan = new Scanner(System.in);
         boolean loop = true;
         System.out.println("Program do zarzadzania baza danych");
@@ -235,7 +221,6 @@ public class Main {
                 }
                 default ->
                     System.out.println("Niepoprawna opcja!");
-
             }
         }
     }
