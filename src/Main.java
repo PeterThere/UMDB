@@ -219,8 +219,113 @@ public class Main {
 
     static void delete()
     {
+        boolean del = true;
+        Scanner scaner = new Scanner(System.in);
+        while(del) {
+            System.out.println("Menu usuwania");
+            System.out.println("Usun gre - 1");
+            System.out.println("Usun mecz - 2");
+            System.out.println("Usun turniej - 3");
+            System.out.println("Wyjscie do menu glownego - 0");
+            System.out.println("Wybierz pozycje: ");
 
+            int input = scaner.nextInt();
+            switch (input) {
+                case 1 -> {
+                    MysqlConnect mysqlConnect = new MysqlConnect();
+                    try {
+                        System.out.println("Podaj ID gry: ");
+                        int id_gry = scaner.nextInt();
 
+                        Statement stmt = mysqlConnect.connect().createStatement();
+                        int ra = stmt.executeUpdate("DELETE FROM umdatabase.gra WHERE ID=id_gry");
+
+                        if(ra == 0)
+                        {
+                            System.out.println("Brak gry o podanym ID");
+                            break;
+                        }
+                        else {
+
+                            System.out.println("Gra o nr ID " + id_gry + " została usunieta\n");
+                        }
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                case 2 -> {
+                    MysqlConnect mysqlConnect = new MysqlConnect();
+                    try {
+                        System.out.println("Podaj ID meczu: ");
+                        int id_meczu = scaner.nextInt();
+
+                        Statement stmt = mysqlConnect.connect().createStatement();
+                        int ra = stmt.executeUpdate("DELETE FROM umdatabase.mecz WHERE ID=id_meczu");
+
+                        if(ra == 0)
+                        {
+                            System.out.println("Brak meczu o podanym ID");
+                            break;
+                        }
+                        else {
+
+                            Statement stmt2 = mysqlConnect.connect().createStatement();
+                            ra = stmt2.executeUpdate("DELETE FROM umdatabase.gra WHERE Mecz_ID=id_meczu");
+
+                            System.out.println("Mecz o nr ID " + id_meczu + " został usuniety\n");
+                        }
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                case 3 -> {
+                    MysqlConnect mysqlConnect = new MysqlConnect();
+                    try {
+                        System.out.println("Podaj ID turnieju: ");
+                        int id_turnieju = scaner.nextInt();
+
+                        Statement stmt = mysqlConnect.connect().createStatement();
+                        int ra = stmt.executeUpdate("DELETE FROM umdatabase.turniej WHERE ID=id_turnieju");
+
+                        if(ra == 0)
+                        {
+                            System.out.println("Brak turnieju o podanym ID");
+                            break;
+                        }
+                        else {
+
+                            //Statement stmt2 = mysqlConnect.connect().createStatement();
+                            //ra = stmt2.executeUpdate("DELETE FROM umdatabase.gra WHERE Mecz_ID=id_meczu");
+
+                            Statement stmt3 = mysqlConnect.connect().createStatement();
+                            ra = stmt3.executeUpdate("DELETE FROM umdatabase.mecz WHERE Turniej_ID=id_turnieju");
+
+                            Statement stmt4 = mysqlConnect.connect().createStatement();
+                            ra = stmt4.executeUpdate("DELETE FROM umdatabase.turniej_bohaterowie WHERE Turniej_ID=id_turnieju");
+
+                            Statement stmt5 = mysqlConnect.connect().createStatement();
+                            ra = stmt5.executeUpdate("DELETE FROM umdatabase.mapa_turniej WHERE Turniej_ID=id_turnieju");
+
+                            System.out.println("Turniej o nr ID " + id_turnieju + " został usuniety\n");
+                        }
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                case 0 -> {
+                    del = false;
+                    return;
+                }
+
+                default -> System.out.println("Niepoprawna opcja!");
+            }
+        }
     }
 
     public static void main(String[] args) {
