@@ -60,7 +60,7 @@ public class Main {
                                     + rs.getInt("Turniej_ID"));
                         }
                     } catch (SQLException e){
-                       e.printStackTrace();
+                        e.printStackTrace();
                     }
                 }
                 case 3 -> {
@@ -188,195 +188,195 @@ public class Main {
     }
 
     static void insert(){
-    MysqlConnect mysqlConnect = new MysqlConnect();
-    boolean disp = true;
-    Scanner scanner = new Scanner(System.in);
+        MysqlConnect mysqlConnect = new MysqlConnect();
+        boolean disp = true;
+        Scanner scanner = new Scanner(System.in);
         while(disp) {
-        System.out.println("Menu dodawania");
-        System.out.println("Dodaj turniej - 1");
-        System.out.println("Dodaj mecz i gry- 2");
-        System.out.println("Dodaj gracza- 3");
-        System.out.println("Dodaj bohatera - 4");
-        System.out.println("Wyjscie do menu glownego - 0");
-        System.out.println("Wybierz pozycje: ");
-        int input = scanner.nextInt();
-        scanner.nextLine();
+            System.out.println("Menu dodawania");
+            System.out.println("Dodaj turniej - 1");
+            System.out.println("Dodaj mecz i gry- 2");
+            System.out.println("Dodaj gracza- 3");
+            System.out.println("Dodaj bohatera - 4");
+            System.out.println("Wyjscie do menu glownego - 0");
+            System.out.println("Wybierz pozycje: ");
+            int input = scanner.nextInt();
+            scanner.nextLine();
 
-        switch (input) {
-            case 1 -> {
-                System.out.print("Podaj nazwę turnieju:");
-                String nazwaTurnieju = scanner.nextLine();
-                System.out.print("Podaj maksymalna liczbe graczy:");
-                int liczbaGraczy = scanner.nextInt();
-                scanner.nextLine();
-                System.out.print("Opisz system rozgrywki:");
-                String systemRozgrywki = scanner.nextLine();
-                int idTurnieju =0;
-                try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.turniej");
-                    rs.moveToInsertRow();
-                    rs.updateString(2, nazwaTurnieju);
-                    rs.updateInt(3, liczbaGraczy);
-                    rs.updateString(4, systemRozgrywki);
-                    rs.insertRow();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                    ResultSet rs = stmt.executeQuery("select * from umdatabase.turniej");
-                    while (rs.next()) {
-                        rs.moveToCurrentRow();
-                        idTurnieju = rs.getInt("ID");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Dodano turniej!");
-                String nazwaBohatera;
-                do{
-                    System.out.println("Podaj nazwe dostepnego bohatera dla turnieju:");
-                    nazwaBohatera = scanner.nextLine();
+            switch (input) {
+                case 1 -> {
+                    System.out.print("Podaj nazwę turnieju:");
+                    String nazwaTurnieju = scanner.nextLine();
+                    System.out.print("Podaj maksymalna liczbe graczy:");
+                    int liczbaGraczy = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Opisz system rozgrywki:");
+                    String systemRozgrywki = scanner.nextLine();
+                    int idTurnieju =0;
                     try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                        ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.turniej_bohaterowie");
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.turniej");
                         rs.moveToInsertRow();
-                        rs.updateInt(1, idTurnieju);
-                        rs.updateString(2, nazwaBohatera);
+                        rs.updateString(2, nazwaTurnieju);
+                        rs.updateInt(3, liczbaGraczy);
+                        rs.updateString(4, systemRozgrywki);
                         rs.insertRow();
                     } catch (SQLException e) {
-                        break;
+                        e.printStackTrace();
                     }
-                }while(nazwaBohatera != "0");
-            }
-               case 2 -> {
-                   //Dodawanie meczu do turnieju
-                   System.out.print("Podaj ID turnieju:");
-                   int idTurnieju = scanner.nextInt();
-                   scanner.nextLine();
-                   System.out.print("Podaj ilosc gier:");
-                   int liczbaGier = scanner.nextInt();
-                   scanner.nextLine();
-                   System.out.print("Podaj liczbe graczy bioracych udzial w meczu:");
-                   int liczbaGraczy = scanner.nextInt();
-                   scanner.nextLine();
-                   int idMeczu = 0;
-                   try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                       ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.mecz");
-                       rs.moveToInsertRow();
-                       rs.updateInt(3, liczbaGier);
-                       rs.updateInt(4, idTurnieju);
-                       rs.insertRow();
-                   } catch (SQLException e) {
-                       e.printStackTrace();
-                   }
-                   try {
-                       Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                       ResultSet rs = stmt.executeQuery("select * from umdatabase.mecz");
-                       while (rs.next()) {
-                           rs.moveToCurrentRow();
-                           idMeczu = rs.getInt(1);
-                       }
-                   } catch (SQLException e) {
-                       e.printStackTrace();
-                   }
-
-                   System.out.println("Dodano mecz!");
-                   //Dodawanie gier do meczu
-                   for(int i = 1; i <= liczbaGier; i++){
-                       System.out.println("Dodawanie " + i + ". gry:");
-                       System.out.println("Podaj ilosc rozegranych tur w " + i + ". grze:");
-                       int iloscTur = scanner.nextInt();
-                       scanner.nextLine();
-                       System.out.println("Podaj ID mapy w " + i + ". grze:");
-                       int idMapy = scanner.nextInt();
-                       scanner.nextLine();
-                       int idGry = 0;
-                       try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                           ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.gra");
-                           rs.moveToInsertRow();
-                           rs.updateInt(2, iloscTur);
-                           rs.updateInt(3, idMeczu);
-                           rs.updateInt(4, idMapy);
-                           rs.insertRow();
-                       } catch (SQLException e) {
-                           e.printStackTrace();
-                       }
-                       try {
-                           Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                           ResultSet rs = stmt.executeQuery("select * from umdatabase.gra");
-                           while (rs.next()) {
-                               rs.moveToCurrentRow();
-                               idGry = rs.getInt("ID");
-                           }
-                       } catch (SQLException e) {
-                           e.printStackTrace();
-                       }
-                       //Dodawanie graczy do gry
-                       for(int j = 1; j <= liczbaGraczy; j++){
-                           System.out.println("Podaj ID " + j + ". gracza:");
-                           int idGracza = scanner.nextInt();
-                           scanner.nextLine();
-                           System.out.println("Podaj bohatera " + j + ". gracza:");
-                           String bohaterGracza = scanner.nextLine();
-                           System.out.println("Podaj koncowe zdrowie " + j + ". gracza:");
-                           int zdrowieGracza = scanner.nextInt();
-                           scanner.nextLine();
-                           try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                               ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.zawodnicy");
-                               rs.moveToInsertRow();
-                               rs.updateInt(2, zdrowieGracza);
-                               rs.updateInt(3, idGracza);
-                               rs.updateString(4, bohaterGracza);
-                               rs.updateInt(5, idGry);
-                               rs.insertRow();
-                           } catch (SQLException e) {
-                               e.printStackTrace();
-                           }
-                       }
-                   }
-               }
-            case 3 -> {
-                System.out.println("Podaj imie gracza:");
-                String imieGracza = scanner.nextLine();
-                System.out.println("Podaj datę urodzenia gracza(format YYYY-MM-DD):");
-                String dataUrodzenia = scanner.nextLine();
-                System.out.println("Podaj typ uczestnika (organizator/uczestnik):");
-                String typUczestnika = scanner.nextLine();
-                try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.gracz");
-                    rs.moveToInsertRow();
-                    rs.updateString(1, imieGracza);
-                    rs.updateString(2, dataUrodzenia);
-                    rs.updateString(4, typUczestnika);
-                    rs.insertRow();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                    try {
+                        Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        ResultSet rs = stmt.executeQuery("select * from umdatabase.turniej");
+                        while (rs.next()) {
+                            rs.moveToCurrentRow();
+                            idTurnieju = rs.getInt("ID");
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Dodano turniej!");
+                    String nazwaBohatera;
+                    do{
+                        System.out.println("Podaj nazwe dostepnego bohatera dla turnieju:");
+                        nazwaBohatera = scanner.nextLine();
+                        try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                            ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.turniej_bohaterowie");
+                            rs.moveToInsertRow();
+                            rs.updateInt(1, idTurnieju);
+                            rs.updateString(2, nazwaBohatera);
+                            rs.insertRow();
+                        } catch (SQLException e) {
+                            break;
+                        }
+                    }while(nazwaBohatera != "0");
                 }
-                System.out.println("Dodano gracza!");
-            }
-            case 4 -> {
-                System.out.println("Podaj nazwe bohatera:");
-                String nazwaBohatera = scanner.nextLine();
-                System.out.println("Podaj startowe zdrowie bohatera:");
-                int maksZdrowie = scanner.nextInt();
-                try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.bohaterowie");
-                    rs.moveToInsertRow();
-                    rs.updateString(1, nazwaBohatera);
-                    rs.updateInt(2, maksZdrowie);
-                    rs.insertRow();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Dodano bohatera!");
-            }
-            case 0 ->{
-                disp = true;
-                return;
-            }
+                case 2 -> {
+                    //Dodawanie meczu do turnieju
+                    System.out.print("Podaj ID turnieju:");
+                    int idTurnieju = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Podaj ilosc gier:");
+                    int liczbaGier = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Podaj liczbe graczy bioracych udzial w meczu:");
+                    int liczbaGraczy = scanner.nextInt();
+                    scanner.nextLine();
+                    int idMeczu = 0;
+                    try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.mecz");
+                        rs.moveToInsertRow();
+                        rs.updateInt(3, liczbaGier);
+                        rs.updateInt(4, idTurnieju);
+                        rs.insertRow();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        ResultSet rs = stmt.executeQuery("select * from umdatabase.mecz");
+                        while (rs.next()) {
+                            rs.moveToCurrentRow();
+                            idMeczu = rs.getInt(1);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
 
-            default -> System.out.println("Niepoprawna opcja!");
-        }
+                    System.out.println("Dodano mecz!");
+                    //Dodawanie gier do meczu
+                    for(int i = 1; i <= liczbaGier; i++){
+                        System.out.println("Dodawanie " + i + ". gry:");
+                        System.out.println("Podaj ilosc rozegranych tur w " + i + ". grze:");
+                        int iloscTur = scanner.nextInt();
+                        scanner.nextLine();
+                        System.out.println("Podaj ID mapy w " + i + ". grze:");
+                        int idMapy = scanner.nextInt();
+                        scanner.nextLine();
+                        int idGry = 0;
+                        try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                            ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.gra");
+                            rs.moveToInsertRow();
+                            rs.updateInt(2, iloscTur);
+                            rs.updateInt(3, idMeczu);
+                            rs.updateInt(4, idMapy);
+                            rs.insertRow();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                            ResultSet rs = stmt.executeQuery("select * from umdatabase.gra");
+                            while (rs.next()) {
+                                rs.moveToCurrentRow();
+                                idGry = rs.getInt("ID");
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        //Dodawanie graczy do gry
+                        for(int j = 1; j <= liczbaGraczy; j++){
+                            System.out.println("Podaj ID " + j + ". gracza:");
+                            int idGracza = scanner.nextInt();
+                            scanner.nextLine();
+                            System.out.println("Podaj bohatera " + j + ". gracza:");
+                            String bohaterGracza = scanner.nextLine();
+                            System.out.println("Podaj koncowe zdrowie " + j + ". gracza:");
+                            int zdrowieGracza = scanner.nextInt();
+                            scanner.nextLine();
+                            try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                                ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.zawodnicy");
+                                rs.moveToInsertRow();
+                                rs.updateInt(2, zdrowieGracza);
+                                rs.updateInt(3, idGracza);
+                                rs.updateString(4, bohaterGracza);
+                                rs.updateInt(5, idGry);
+                                rs.insertRow();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                case 3 -> {
+                    System.out.println("Podaj imie gracza:");
+                    String imieGracza = scanner.nextLine();
+                    System.out.println("Podaj datę urodzenia gracza(format YYYY-MM-DD):");
+                    String dataUrodzenia = scanner.nextLine();
+                    System.out.println("Podaj typ uczestnika (organizator/uczestnik):");
+                    String typUczestnika = scanner.nextLine();
+                    try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.gracz");
+                        rs.moveToInsertRow();
+                        rs.updateString(1, imieGracza);
+                        rs.updateString(2, dataUrodzenia);
+                        rs.updateString(4, typUczestnika);
+                        rs.insertRow();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Dodano gracza!");
+                }
+                case 4 -> {
+                    System.out.println("Podaj nazwe bohatera:");
+                    String nazwaBohatera = scanner.nextLine();
+                    System.out.println("Podaj startowe zdrowie bohatera:");
+                    int maksZdrowie = scanner.nextInt();
+                    try ( Statement stmt = mysqlConnect.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM umdatabase.bohaterowie");
+                        rs.moveToInsertRow();
+                        rs.updateString(1, nazwaBohatera);
+                        rs.updateInt(2, maksZdrowie);
+                        rs.insertRow();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Dodano bohatera!");
+                }
+                case 0 ->{
+                    disp = true;
+                    return;
+                }
+
+                default -> System.out.println("Niepoprawna opcja!");
+            }
         }
 
 
@@ -501,7 +501,7 @@ public class Main {
                     loop = false;
                 }
                 default ->
-                    System.out.println("Niepoprawna opcja!");
+                        System.out.println("Niepoprawna opcja!");
             }
         }
     }
